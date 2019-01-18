@@ -142,11 +142,6 @@ stdenv.mkDerivation rec {
       substituteInPlace scripts/bootstrap/compile.sh \
           --replace /bin/sh ${customBash}/bin/bash
 
-      # We only build with JDK8 for now, since JDK11 does not compile bazel
-      substituteInPlace tools/jdk/default_java_toolchain.bzl \
-        --replace '"jvm_opts": JDK9_JVM_OPTS' \
-                  '"jvm_opts": JDK8_JVM_OPTS'
-
       # add nix environment vars to .bazelrc
       cat >> .bazelrc <<EOF
       build --experimental_distdir=${distDir}
@@ -155,7 +150,6 @@ stdenv.mkDerivation rec {
       build --host_copt="$(echo $NIX_CFLAGS_COMPILE | sed -e 's/ /" --host_copt="/g')"
       build --linkopt="-Wl,$(echo $NIX_LDFLAGS | sed -e 's/ /" --linkopt="-Wl,/g')"
       build --host_linkopt="-Wl,$(echo $NIX_LDFLAGS | sed -e 's/ /" --host_linkopt="-Wl,/g')"
-      build --host_javabase='@local_jdk//:jdk'
       EOF
 
       # add the same environment vars to compile.sh
@@ -163,7 +157,6 @@ stdenv.mkDerivation rec {
           -e "/\$command \\\\$/a --host_copt=\"$(echo $NIX_CFLAGS_COMPILE | sed -e 's/ /" --host_copt=\"/g')\" \\\\" \
           -e "/\$command \\\\$/a --linkopt=\"-Wl,$(echo $NIX_LDFLAGS | sed -e 's/ /" --linkopt=\"-Wl,/g')\" \\\\" \
           -e "/\$command \\\\$/a --host_linkopt=\"-Wl,$(echo $NIX_LDFLAGS | sed -e 's/ /" --host_linkopt=\"-Wl,/g')\" \\\\" \
-          -e "/\$command \\\\$/a --host_javabase='@local_jdk//:jdk' \\\\" \
           -i scripts/bootstrap/compile.sh
 
       # --experimental_strict_action_env (which will soon become the
