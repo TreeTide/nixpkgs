@@ -8618,6 +8618,7 @@ in
   mkcl = callPackage ../development/compilers/mkcl {};
 
   inherit (callPackage ../development/compilers/mlton {})
+    mlton20100608
     mlton20130715
     mlton20180207Binary
     mlton20180207

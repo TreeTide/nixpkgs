@@ -1,5 +1,9 @@
-{ stdenv, fetchurl, fetchgit, patchelf, gmp }:
+{ stdenv, fetchurl, fetchgit, patchelf, gmp, gmp4 }:
 rec {
+  mlton20100608 = import ./20100608.nix {
+    inherit stdenv fetchurl patchelf gmp4;
+  };
+
   mlton20130715 = import ./20130715.nix {
     inherit stdenv fetchurl patchelf gmp;
   };
